@@ -1,0 +1,29 @@
+name: Deploy MediTrack
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Usa una máquina virtual con Linux
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Descarga tu código
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest
+
+    - name: Run tests
+      run: pytest tests/  # Ejecuta todas las pruebas
+
+    - name: Build Docker image
+      run: docker build -t meditrack:${{ github.sha }} .  # Construye la imagen
